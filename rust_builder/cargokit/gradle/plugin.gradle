@@ -58,13 +58,15 @@ abstract class CargoKitBuildTask extends DefaultTask {
         def manifestDir = Paths.get(project.buildscript.sourceFile.parent, project.cargokit.manifestDir)
 
         def rootProjectDir = project.rootProject.projectDir
-
-        project.exec {
-            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                executable path
-            } else {
-                sh "${executable path}"
+        
+        if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
+            project.exec {
+                commandLine 'chmod', '+x', path
             }
+        }
+        
+        project.exec {
+            executable path
             args "build-gradle"
             environment "CARGOKIT_ROOT_PROJECT_DIR", rootProjectDir
             environment "CARGOKIT_TOOL_TEMP_DIR", "${buildDir}/build_tool"
