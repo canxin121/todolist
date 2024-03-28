@@ -28,7 +28,7 @@ jobs:
       - name: Upload IPA
         uses: actions/upload-artifact@v2
         with:
-          name: app.ipa
+          name: build_ios
           path: app.ipa
   
   build_android:
