@@ -55,32 +55,48 @@ function(apply_cargokit target manifest_dir lib_name any_symbol_name)
     # Using generators in custom command is only supported in CMake 3.20+
     if (CMAKE_CONFIGURATION_TYPES AND ${CMAKE_VERSION} VERSION_LESS "3.20.0")
         foreach(CONFIG IN LISTS CMAKE_CONFIGURATION_TYPES)
-            add_custom_command(
-                OUTPUT
-                "${CMAKE_CURRENT_BINARY_DIR}/${CONFIG}/${CARGOKIT_LIB_FULL_NAME}"
-                "${CMAKE_CURRENT_BINARY_DIR}/_phony_"
-                COMMAND ${CMAKE_COMMAND} -E env ${CARGOKIT_ENV}
-                if(WIN32)
+            if(WIN32)
+                add_custom_command(
+                    OUTPUT
+                    "${CMAKE_CURRENT_BINARY_DIR}/${CONFIG}/${CARGOKIT_LIB_FULL_NAME}"
+                    "${CMAKE_CURRENT_BINARY_DIR}/_phony_"
+                    COMMAND ${CMAKE_COMMAND} -E env ${CARGOKIT_ENV}
                     "${cargokit_cmake_root}/run_build_tool${SCRIPT_EXTENSION}" build-cmake
-                else()
-                    sh "${cargokit_cmake_root}/run_build_tool${SCRIPT_EXTENSION}" build-cmake
-                endif()
-                VERBATIM
-            )
+                    VERBATIM
+                )
+            else()
+                add_custom_command(
+                    OUTPUT
+                    "${CMAKE_CURRENT_BINARY_DIR}/${CONFIG}/${CARGOKIT_LIB_FULL_NAME}"
+                    "${CMAKE_CURRENT_BINARY_DIR}/_phony_"
+                    COMMAND chmod +x "${cargokit_cmake_root}/run_build_tool${SCRIPT_EXTENSION}"
+                    COMMAND ${CMAKE_COMMAND} -E env ${CARGOKIT_ENV}
+                    "${cargokit_cmake_root}/run_build_tool${SCRIPT_EXTENSION}" build-cmake
+                    VERBATIM
+                )
+            endif()
         endforeach()
     else()
-        add_custom_command(
+        if(WIN32)
+            add_custom_command(
             OUTPUT
             ${OUTPUT_LIB}
             "${CMAKE_CURRENT_BINARY_DIR}/_phony_"
             COMMAND ${CMAKE_COMMAND} -E env ${CARGOKIT_ENV}
-            if(WIN32)
-                "${cargokit_cmake_root}/run_build_tool${SCRIPT_EXTENSION}" build-cmake
-            else()
-                sh "${cargokit_cmake_root}/run_build_tool${SCRIPT_EXTENSION}" build-cmake
-            endif()
+            "${cargokit_cmake_root}/run_build_tool${SCRIPT_EXTENSION}" build-cmake
             VERBATIM
-        )
+           )
+        else()
+            add_custom_command(
+                OUTPUT
+                ${OUTPUT_LIB}
+                "${CMAKE_CURRENT_BINARY_DIR}/_phony_"
+                COMMAND chmod +x "${cargokit_cmake_root}/run_build_tool${SCRIPT_EXTENSION}" # 新增的代码
+                COMMAND ${CMAKE_COMMAND} -E env ${CARGOKIT_ENV}
+                "${cargokit_cmake_root}/run_build_tool${SCRIPT_EXTENSION}" build-cmake
+                VERBATIM
+            )
+        endif()
     endif()
 
 
