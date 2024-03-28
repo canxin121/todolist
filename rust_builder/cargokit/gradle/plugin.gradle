@@ -63,8 +63,7 @@ abstract class CargoKitBuildTask extends DefaultTask {
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {
                 executable path
             } else {
-                executable "sh"
-                args path
+                sh "${executable path}"
             }
             args "build-gradle"
             environment "CARGOKIT_ROOT_PROJECT_DIR", rootProjectDir
