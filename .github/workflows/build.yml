@@ -99,7 +99,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: build_linux
-          path: build
+          path: build/linux/x64/release
           
   build_macos:
     runs-on: macos-latest
