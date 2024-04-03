@@ -25,7 +25,9 @@ jobs:
           xcrun bitcode_strip ./build/ios/iphoneos/Runner.app/Frameworks/App.framework/App -r -o ./build/ios/iphoneos/Runner.app/Frameworks/App.framework/App
           xcrun bitcode_strip ./build/ios/iphoneos/Runner.app/Frameworks/path_provider_foundation.framework/path_provider_foundation -r -o ./build/ios/iphoneos/Runner.app/Frameworks/path_provider_foundation.framework/path_provider_foundation
           xcrun bitcode_strip ./build/ios/iphoneos/Runner.app/Frameworks/rust_lib_todolist.framework/rust_lib_todolist -r -o ./build/ios/iphoneos/Runner.app/Frameworks/rust_lib_todolist.framework/rust_lib_todolist
-
+          xcrun bitcode_strip ./build/ios/iphoneos/Runner.app/Frameworks/libswiftCore.dylib -r -o ./build/ios/iphoneos/Runner.app/Frameworks/libswiftCore.dylib
+          xcrun bitcode_strip ./build/ios/iphoneos/Runner.app/Frameworks/libswiftFoundation.dylib -r -o ./build/ios/iphoneos/Runner.app/Frameworks/libswiftFoundation.dylib
+          
           mkdir -p Payload
           mv ./build/ios/iphoneos/Runner.app Payload
           zip -r -y Payload.zip Payload/Runner.app
